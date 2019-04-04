@@ -1,8 +1,3 @@
-# This script makes WLAN Hotspot on the WLAN0 and makes there DHCP offerings.
-# ETH0 still uses DHCP to get a IP if you plug it in when you connect it to your DHCP Server at home
-
-# Please be carefull with the IP's and Hotspot names, you want to alter them to your needs
-
 #Disable DHCP on WLAN0
 sudo bash -c 'echo "denyinterfaces wlan0" >> /etc/dhcpcd.conf'
 

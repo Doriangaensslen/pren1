@@ -1,16 +1,13 @@
-# This Installs all nessecery things to run OPENCV, TESSERACT to recognize objects with a camera
-# Please check the Whole script if it Fits. Pay attention at the SSH Key Part.
-# REMARK:
-# #Based on Tutorial found in 
-# https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/
+##Based on Tutorial found in 
+#https://www.pyimagesearch.com/2017/09/04/raspbian-stretch-install-opencv-3-python-on-your-raspberry-pi/
 
-#lxrandr helps to resize the screen resolutio on a raspberry if you have problemsn
+#lxrandr helps for the screen resolution
 
 #Expand FS
 sudo raspi-config --expand-rootfs
 
 mkdir /home/pi/.ssh/
-echo "PUTYOURSSHKEYHERE!!!" >> /home/pi/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCW1BFO/++g1DbCp8V5ZDgj6Qan+zJCJ2AZ8qorwwpIfI73LtUpYF+5be9eEniqaE7vH73YSUls9wPz53aMuJrTyjNDOfd1GFfOwk/MtlpcDbR5IdlPoL/2UzBJ+a5v7WHT3FMYa9e8QtCEkegU1FeEJ62VgRkMpZh0rfiEFygNxayL/gGXk/5ISsTQEaBGCLAZO/UqH+uS7bjJ4iBj0JDWVjzN1A+S4vrdzKwj91y8CUiIwJ6TF5Zv3vh8XuTsxTnlYMowsO14Mi7p+whH3LlxngBkkijPGX0gFlwEhRcVwcYYw+NFQBSUsBUmmOKa4uYp+ORamVVoD3Nt+l9KEBnH dorian@Dorians-MacBook-Pro.local" >> /home/pi/.ssh/authorized_keys
 
 #Install Kernel Headers
 sudo apt-get update
@@ -68,7 +65,7 @@ source ~/.profile
 #Create virtualenv
 mkvirtualenv cv --python=/usr/bin/python3
 workon cv
-pip install numpy
+pip install numpy picamera
 
 #Compile OpenCV
 cd ~/opencv-4.*/
@@ -96,10 +93,10 @@ cd
 sudo rm opencv* -rf
 
 #Install git
-apt-get install -y git
+sudo apt-get install -y git
 
 #Install Tesseract from Source
-apt-get install -y libleptonica-dev git
+sudo apt-get install -y libleptonica-dev git
 git clone --depth 1  https://github.com/tesseract-ocr/tesseract.git
 cd tesseract/
 ./autogen.sh
@@ -115,7 +112,15 @@ wget https://github.com/Shreeshrii/tessdata_shreetest/raw/a2266e2164e06dd337369a
 #wget https://github.com/tesseract-ocr/tessdata_fast/blob/master/eng.traineddata
 echo "export TESSDATA_PREFIX=/home/pi/tessdata" >> ~/.profile 
 
+pip3 install pytesseract
+
 #Just VBOX Settings
 #sudo apt-get install -y virtualbox-guest-dkms virtualbox-guest-x11
 #sudo adduser pi vboxsf
 #sudo shutdown -r now
+
+#Make Sure, the i2c stuff is installed and nabled
+sudo bash -c 'echo -e "i2c-bcm2708\ni2c-dev" >> /etc/modules'
+sudo apt-get install -y i2c-tools python-smbus
+
+sudo bash -c 'echo "dtparam=i2c_arm=on" >> /boot/config.txt'
